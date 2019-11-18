@@ -25,7 +25,7 @@ textarea {
   margin-top: 10px;
 }
 
-.list-li {
+.category-li {
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -34,6 +34,7 @@ textarea {
 
 li.li-hover:hover {
   background-color: #f9f9f9 !important;
+  cursor: pointer;
 }
 .fa-plus {
   cursor: pointer;
@@ -54,4 +55,10 @@ li.li-hover:hover {
 }
 .nounderline {
   text-decoration: none !important;
+}
+
+.task-li {
+  text-overflow: ellipsis; /* will make [...] at the end */
+  white-space: nowrap; /* paragraph to one line */
+  overflow: hidden; /* older browsers */
 }

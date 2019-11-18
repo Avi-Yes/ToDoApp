@@ -5,11 +5,10 @@ const TaskList = props => {
   return (
     <ul className="list-group">
       {items.map(item => (
-        <div key={item._id} className="input-group row">
-          <div className="col-1" />
+        <div key={item._id} className="input-group row justify-content-between">
           <li
             onClick={() => OnClickedItem(item)}
-            className="form-control rounded border-0 col-9 list-li li-hover"
+            className="form-control rounded border-0 col-10 list-li li-hover task-li"
           >
             {item.title}
           </li>
@@ -22,7 +21,7 @@ const TaskList = props => {
           </button>
         </div>
       ))}
-      <div className="dropdown-divider" />
+      <div className="dropdown-divider mt-3" />
       <div className="input-group row">
         <div className="col-1" />
 

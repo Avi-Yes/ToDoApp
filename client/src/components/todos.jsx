@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ListsDropDown from "./listDropDown";
+import CategoryList from "./categoryList";
 import TaskList from "./taskList";
 import TaskForm from "./taskForm";
 import { getLists } from "../services/fakeListService";
@@ -11,29 +11,38 @@ const axios = require("axios");
 class ToDos extends Component {
   state = {
     tasks: [],
-    lists: [],
+    categories: [],
     selectedList: {},
     selectedTask: {}
   };
 
   componentDidMount() {
-    //const lists = [{ name: "All Tasks" }, ...getLists()];
+    //const categories = [{ name: "All Tasks" }, ...getLists()];
     axios
-      .get("http://localhost:5000/api/lists")
+      .get("http://localhost:5000/api/categories")
       .then(res => {
-        const lists = res.data;
-        const newLists = [{ name: "All Taks" }, ...lists];
-        this.setState({ lists: newLists, selectedList: lists[0] });
+        const categories = res.data;
+        const categoreyList = [{ name: "All Taks" }, ...categories];
+        this.setState({
+          categories: categoreyList,
+          selectedList: categoreyList[0],
+          tasks: tasks
+        });
       })
       .catch(err => console.log(err));
     const tasks = getTasks();
-    //const selectedList = lists[0];
-
-    this.setState({
-      /*lists: lists,*/ tasks: tasks
-      /*selectedList: selectedList*/
-    });
+    //const selectedList = categories[0];
+    // this.getAllCategories();
   }
+
+  getAllCategories = async () => {
+    try {
+      const result = await axios.get("http://localhost:5000/api/categories");
+      console.log(result);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
 
   handleTimeChange = date => {
     this.setState({
@@ -49,7 +58,7 @@ class ToDos extends Component {
       const newTask = {
         _id: tasks[tasks.length - 1]._id + 1,
         title: inputElement.value,
-        list: { ...this.state.selectedList }
+        category: { ...this.state.selectedList }
       };
 
       tasks.push(newTask);
@@ -59,12 +68,10 @@ class ToDos extends Component {
   };
 
   handelListMenuIcon = () => {
-    var x = document.querySelector(".list-group");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
-    }
+    let categoryList = document.querySelector(".category-list");
+    categoryList.style.display === "none"
+      ? (categoryList.style.display = "block")
+      : (categoryList.style.display = "none");
   };
 
   handelTaskClicked = task => {
@@ -81,10 +88,10 @@ class ToDos extends Component {
   };
 
   filteredTaskByList = () => {
-    return this.state.selectedList !== this.state.lists[0] &&
+    return this.state.selectedList !== this.state.categories[0] &&
       this.state.selectedList._id
       ? this.state.tasks.filter(
-          task => task.list._id === this.state.selectedList._id
+          task => task.category._id === this.state.selectedList._id
         )
       : this.state.tasks;
   };
@@ -95,17 +102,29 @@ class ToDos extends Component {
     this.setState({ selectedList, selectedTask });
   };
 
-  handelAddList = inputElement => {
-    if (inputElement.value.length > 0) {
-      const lists = [...this.state.lists];
-      const id = lists.length === 0 ? 0 : lists[lists.length - 1]._id + 1;
-      const newList = {
-        name: inputElement.value,
-        _id: id
+  handelAddCategory = value => {
+    if (value.length > 0) {
+      const url = "http://localhost:5000/api/categories";
+      const newCategorey = {
+        name: value
       };
-      lists.push(newList);
-      inputElement.value = "";
-      this.setState({ lists: lists });
+      axios({
+        method: "post",
+        url: url,
+        data: newCategorey
+      })
+        .then(categorey => {
+          console.log(categorey);
+          const categories = [...this.state.categories];
+          const newCategory = {
+            name: categorey.data.name,
+            _id: categorey.data._id
+          };
+          categories.push(newCategory);
+          value = "";
+          this.setState({ categories: categories });
+        })
+        .catch(err => console.log(err));
     }
   };
   render() {
@@ -120,11 +139,11 @@ class ToDos extends Component {
           />
         </div>
         <div className="row">
-          <div className="col-md-3 list-group p-3 mb-2 ">
-            <ListsDropDown
-              items={this.state.lists}
+          <div className="col-md-3 list-group p-3 mb-2 category-list ">
+            <CategoryList
+              items={this.state.categories}
               onItemSelect={this.handelListSelect}
-              onClickedAddList={this.handelAddList}
+              onClickedAddCategory={this.handelAddCategory}
               selectedItem={this.state.selectedList}
             />
           </div>
