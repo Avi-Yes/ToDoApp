@@ -3,18 +3,6 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 
-// const Category = mongoose.model(
-//   "Categories",
-//   new mongoose.Schema({
-//     name: {
-//       type: String,
-//       require: true,
-//       minlength: 2,
-//       maxlength: 255
-//     }
-//   })
-// );
-
 router.get("/", async (req, res) => {
   const categories = await Category.find();
   res.send(categories);
