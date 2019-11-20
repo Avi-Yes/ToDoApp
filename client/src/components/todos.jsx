@@ -25,12 +25,16 @@ class ToDos extends Component {
         const categoreyList = [{ name: "All Taks" }, ...categories];
         this.setState({
           categories: categoreyList,
-          selectedList: categoreyList[0],
-          tasks: tasks
+          selectedList: categoreyList[0]
         });
       })
       .catch(err => console.log(err));
-    const tasks = getTasks();
+    axios.get("http://localhost:5000/api/categories/tasks").then(result => {
+      const tasks = result.data;
+      this.setState({
+        tasks: tasks
+      });
+    });
     //const selectedList = categories[0];
     // this.getAllCategories();
   }
@@ -88,15 +92,15 @@ class ToDos extends Component {
   };
 
   filteredTaskByList = () => {
+    console.log(typeof this.state.selectedList._id);
     return this.state.selectedList !== this.state.categories[0] &&
       this.state.selectedList._id
-      ? this.state.tasks.filter(
-          task => task.category._id === this.state.selectedList._id
-        )
+      ? this.state.selectedList.tasks
       : this.state.tasks;
   };
 
   handelListSelect = item => {
+    console.log(item);
     const selectedList = item;
     const selectedTask = {};
     this.setState({ selectedList, selectedTask });

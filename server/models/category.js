@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
+const { taskSchema } = require("./task");
 
 const Category = mongoose.model(
   "Category",
@@ -7,8 +8,10 @@ const Category = mongoose.model(
     name: {
       type: String,
       require: true,
-      minlength: 2
-    }
+      minlength: 2,
+      maxlength: 100
+    },
+    tasks: [taskSchema]
   })
 );
 
@@ -23,4 +26,4 @@ function validateCategory(category) {
 }
 
 module.exports.Category = Category;
-module.exports.validate = validateCategory;
+module.exports.validateCategory = validateCategory;
